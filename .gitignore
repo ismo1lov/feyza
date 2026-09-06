@@ -1,3 +1,5 @@
-feyza-frontend/
-feyza-admin/
-feyza-backend/
+node_modules/
+dist/
+
+feyza-backend/backend.log
+feyza-backend/uploads/
