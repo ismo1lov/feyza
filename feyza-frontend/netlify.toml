@@ -4,10 +4,10 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://feyza-backend-production.up.railway.app/api/:splat"
+  to = "https://feyza-backend.onrender.com/api/:splat"
   status = 200
   
 [[redirects]]
   from = "/uploads/*"
-  to = "https://feyza-backend-production.up.railway.app/uploads/:splat"
+  to = "https://feyza-backend.onrender.com/uploads/:splat"
   status = 200

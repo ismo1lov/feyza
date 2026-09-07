@@ -45,11 +45,12 @@ app.get('/api/health', (req, res) => {
 
 app.get('/api/debug', async (req, res) => {
   const dbInfo = {
-    host: process.env.MYSQL_HOST || process.env.MYSQLHOST || 'not set',
-    user: process.env.MYSQL_USER || process.env.MYSQLUSER || 'not set',
-    database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'not set',
-    port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 'not set',
-    hasPassword: !!(process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD),
+    host: process.env.MYSQL_HOST || process.env.MYSQLHOST || process.env.DB_HOST || 'not set',
+    user: process.env.MYSQL_USER || process.env.MYSQLUSER || process.env.DB_USER || 'not set',
+    database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || process.env.DB_NAME || 'not set',
+    port: process.env.MYSQL_PORT || process.env.MYSQLPORT || process.env.DB_PORT || 'not set',
+    hasPassword: !!(process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || process.env.DB_PASSWORD),
+    ssl: !!process.env.DB_SSL || !!process.env.MYSQL_SSL || !!process.env.DB_SSL_CA,
   };
   try {
     const pool = await getPool();
