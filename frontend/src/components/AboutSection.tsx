@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePolling } from "@/hooks/usePolling";
 import { Shield, Award, Heart } from "lucide-react";
 
 const ICONS: Record<string, React.ElementType> = { Shield, Award, Heart };
@@ -15,14 +16,13 @@ const AboutSection = () => {
     value3_title: string; value3_desc: string;
   } | null>(null);
 
-  useEffect(() => {
-    fetch("/api/about")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data && data.title) setAbout(data)
-      })
-      .catch(() => {});
-  }, []);
+  usePolling(async () => {
+    try {
+      const res = await fetch("/api/about");
+      const data = await res.json();
+      if (data && data.title) setAbout(data);
+    } catch {}
+  }, 5000);
 
   const fallbackAbout = {
     title: t("about.title"),

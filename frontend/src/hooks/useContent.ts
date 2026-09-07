@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePolling } from "@/hooks/usePolling";
 
 export interface SiteContent {
   heroTitle: string;
@@ -11,21 +12,18 @@ export function useContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch("/api/content")
-      .then((res) => {
-        if (!res.ok) throw new Error("Kontent yuklanmadi");
-        return res.json();
-      })
-      .then((data: SiteContent) => {
-        setContent(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+  usePolling(async () => {
+    try {
+      const res = await fetch("/api/content");
+      if (!res.ok) throw new Error("Kontent yuklanmadi");
+      const data: SiteContent = await res.json();
+      setContent(data);
+      setLoading(false);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Xatolik");
+      setLoading(false);
+    }
+  }, 5000);
 
   return { content, loading, error };
 }

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePolling } from "@/hooks/usePolling";
 import { Sparkles, Heart, Eye, Scissors } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = { Sparkles, Heart, Eye, Scissors };
@@ -12,19 +13,18 @@ const ServicesSection = () => {
   const [apiFailed, setApiFailed] = useState(false);
   const [sectionMeta, setSectionMeta] = useState<{ title: string; subtitle: string } | null>(null);
 
-  useEffect(() => {
-    fetch("/api/services")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length) setServices(data)
-        else setApiFailed(true)
-      })
-      .catch(() => setApiFailed(true));
-    fetch("/api/section-meta/services")
-      .then((r) => r.json())
-      .then((data) => { if (data.title) setSectionMeta(data) })
-      .catch(() => {});
-  }, []);
+  usePolling(async () => {
+    try {
+      const [res1, res2] = await Promise.all([fetch("/api/services"), fetch("/api/section-meta/services")]);
+      const data = await res1.json();
+      if (Array.isArray(data) && data.length) setServices(data);
+      else setApiFailed(true);
+      const meta = await res2.json();
+      if (meta.title) setSectionMeta(meta);
+    } catch {
+      setApiFailed(true);
+    }
+  }, 5000);
 
   const fallbackServices = [
     { title: t("services.manicure"), description: t("services.manicure.desc"), icon: "Sparkles" },
