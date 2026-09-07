@@ -26,12 +26,15 @@ CREATE TABLE IF NOT EXISTS services (
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO services (title, description, icon, sort_order) VALUES
-('Manikyur', 'Professional manikyur xizmatlari', 'Sparkles', 1),
-('Massaj', 'Relaksatsiya beruvchi massaj', 'Heart', 2),
-('Laminatsiya', 'Kirpik va qosh laminatsiyasi', 'Eye', 3),
-('Depilyatsiya', 'Yuqori sifatli depilyatsiya', 'Scissors', 4)
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO services (title, description, icon, sort_order)
+SELECT seed.title, seed.description, seed.icon, seed.sort_order
+FROM (
+  SELECT 'Manikyur' AS title, 'Professional manikyur xizmatlari' AS description, 'Sparkles' AS icon, 1 AS sort_order
+  UNION ALL SELECT 'Massaj', 'Relaksatsiya beruvchi massaj', 'Heart', 2
+  UNION ALL SELECT 'Laminatsiya', 'Kirpik va qosh laminatsiyasi', 'Eye', 3
+  UNION ALL SELECT 'Depilyatsiya', 'Yuqori sifatli depilyatsiya', 'Scissors', 4
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM services);
 
 CREATE TABLE IF NOT EXISTS about (
   id INT PRIMARY KEY DEFAULT 1,
@@ -58,15 +61,18 @@ CREATE TABLE IF NOT EXISTS gallery (
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO gallery (image_url, alt_text, sort_order) VALUES
-('/uploads/gallery1.jpg', 'Nail polish collection', 1),
-('/uploads/gallery2.jpg', 'Beauty tools', 2),
-('/uploads/gallery3.jpg', 'Spa session', 3),
-('/uploads/gallery4.jpg', 'Beauty products', 4),
-('/uploads/gallery5.png', 'Manicure process', 5),
-('/uploads/gallery6.png', 'Lash lamination', 6),
-('/uploads/gallery7.png', 'Facial massage', 7)
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO gallery (image_url, alt_text, sort_order)
+SELECT seed.image_url, seed.alt_text, seed.sort_order
+FROM (
+  SELECT '/uploads/gallery1.jpg' AS image_url, 'Nail polish collection' AS alt_text, 1 AS sort_order
+  UNION ALL SELECT '/uploads/gallery2.jpg', 'Beauty tools', 2
+  UNION ALL SELECT '/uploads/gallery3.jpg', 'Spa session', 3
+  UNION ALL SELECT '/uploads/gallery4.jpg', 'Beauty products', 4
+  UNION ALL SELECT '/uploads/gallery5.png', 'Manicure process', 5
+  UNION ALL SELECT '/uploads/gallery6.png', 'Lash lamination', 6
+  UNION ALL SELECT '/uploads/gallery7.png', 'Facial massage', 7
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM gallery);
 
 CREATE TABLE IF NOT EXISTS faq (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,11 +83,14 @@ CREATE TABLE IF NOT EXISTS faq (
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO faq (question, answer, sort_order) VALUES
-('Qanday qilib bron qilish mumkin?', 'Biz bilan telefon yoki telegram orqali bog''lanib bron qilishingiz mumkin.', 1),
-('Qanday to''lov turlari mavjud?', 'Naqd va plastik karta orqali to''lov qilishingiz mumkin.', 2),
-('Xizmat ko''rsatish vaqti?', 'Dushanbadan Shanbagacha 10:00 dan 20:00 gacha xizmat ko''rsatamiz.', 3)
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO faq (question, answer, sort_order)
+SELECT seed.question, seed.answer, seed.sort_order
+FROM (
+  SELECT 'Qanday qilib bron qilish mumkin?' AS question, 'Biz bilan telefon yoki telegram orqali bog''lanib bron qilishingiz mumkin.' AS answer, 1 AS sort_order
+  UNION ALL SELECT 'Qanday to''lov turlari mavjud?', 'Naqd va plastik karta orqali to''lov qilishingiz mumkin.', 2
+  UNION ALL SELECT 'Xizmat ko''rsatish vaqti?', 'Dushanbadan Shanbagacha 10:00 dan 20:00 gacha xizmat ko''rsatamiz.', 3
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM faq);
 
 CREATE TABLE IF NOT EXISTS certificates (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -91,13 +100,16 @@ CREATE TABLE IF NOT EXISTS certificates (
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO certificates (image_url, title, sort_order) VALUES
-('/uploads/sertifikat-1.png', '', 1),
-('/uploads/sertifikat-2.png', '', 2),
-('/uploads/sertifikat-3.png', '', 3),
-('/uploads/sertifikat-4.png', '', 4),
-('/uploads/sertifikat-5.png', '', 5)
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO certificates (image_url, title, sort_order)
+SELECT seed.image_url, seed.title, seed.sort_order
+FROM (
+  SELECT '/uploads/sertifikat-1.png' AS image_url, '' AS title, 1 AS sort_order
+  UNION ALL SELECT '/uploads/sertifikat-2.png', '', 2
+  UNION ALL SELECT '/uploads/sertifikat-3.png', '', 3
+  UNION ALL SELECT '/uploads/sertifikat-4.png', '', 4
+  UNION ALL SELECT '/uploads/sertifikat-5.png', '', 5
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM certificates);
 
 CREATE TABLE IF NOT EXISTS reviews (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -108,11 +120,14 @@ CREATE TABLE IF NOT EXISTS reviews (
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO reviews (name, text, rating, sort_order) VALUES
-('Sevara', 'Juda yaxshi xizmat! Manikyur juda chiroyli chiqdi.', 5, 1),
-('Aziza', 'Massajdan keyin o''zimni butunlay yangilgandek his qildim.', 5, 2),
-('Malika', 'Kirpik laminatsiyasi ajoyib natija berdi. Tavsiya qilaman!', 5, 3)
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO reviews (name, text, rating, sort_order)
+SELECT seed.name, seed.text, seed.rating, seed.sort_order
+FROM (
+  SELECT 'Sevara' AS name, 'Juda yaxshi xizmat! Manikyur juda chiroyli chiqdi.' AS text, 5 AS rating, 1 AS sort_order
+  UNION ALL SELECT 'Aziza', 'Massajdan keyin o''zimni butunlay yangilgandek his qildim.', 5, 2
+  UNION ALL SELECT 'Malika', 'Kirpik laminatsiyasi ajoyib natija berdi. Tavsiya qilaman!', 5, 3
+) AS seed
+WHERE NOT EXISTS (SELECT 1 FROM reviews);
 
 CREATE TABLE IF NOT EXISTS contact (
   id INT PRIMARY KEY DEFAULT 1,
