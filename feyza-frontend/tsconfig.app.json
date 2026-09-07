@@ -19,6 +19,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@admin/*": [
+        "./src/admin/*"
       ]
     },
     "skipLibCheck": true,
